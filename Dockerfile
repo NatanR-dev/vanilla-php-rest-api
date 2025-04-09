@@ -1,9 +1,9 @@
 FROM php:8.2-apache
 
-
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
     unzip \
+    curl \
+    libzip-dev \
     && docker-php-ext-install zip mysqli pdo pdo_mysql \
     && a2enmod rewrite
 
