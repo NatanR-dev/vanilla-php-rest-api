@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: php:8.2-apache
-    container_name: php_apache
+    container_name: php_apache_
     volumes:
       - ./:/var/www/html
     ports:
@@ -16,7 +16,7 @@ services:
 
   db:
     image: mysql:5.7
-    container_name: mysql_db
+    container_name: mysql_db_
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -31,7 +31,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
+    container_name: phpmyadmin_
     environment:
       PMA_HOST: db
       PMA_USER: ${MYSQL_USER}
