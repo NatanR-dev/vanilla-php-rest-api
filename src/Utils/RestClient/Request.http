@@ -1,0 +1,11 @@
+### Get root /
+GET http://localhost:8080
+
+### Get About
+GET http://localhost:8080/about
+
+### Post Teste
+POST http://localhost:8080/about
+
+### Get not exiting route
+GET http://localhost:8080/test
