@@ -4,8 +4,15 @@ namespace App\Http;
 
 class Request
 {
-    public static function method()
+    private $method;
+
+    public function __construct()
     {
-        return $_SERVER['REQUEST_METHOD'];
+        $this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    }
+
+    public function method(): string
+    {
+        return $this->method;
     }
 }

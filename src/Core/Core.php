@@ -8,7 +8,7 @@ use App\Http\ErrorResponse;
 
 class Core
 {
-    public static function dispatch(array $routes, Response $response)
+    public static function dispatch(array $routes, Request $request, Response $response)
     {
         $url = '/';
 
@@ -26,9 +26,9 @@ class Core
 
                 $routerFound = true;
 
-                if($route['method'] !== Request::method()) {
-                    $errorHttp = new ErrorResponse($response);
-                    $errorHttp->methodNotAllowed($response);
+                if($route['method'] !== $request->method()) {
+                    $errorHttp = new ErrorResponse($request, $response);
+                    $errorHttp->methodNotAllowed();
                     return;
                 }
 
@@ -42,7 +42,7 @@ class Core
         }
 
         if (!$routerFound) {
-            $errorHttp = new ErrorResponse($response);
+            $errorHttp = new ErrorResponse($request, $response);
             $errorHttp->notFound();
         }
     }

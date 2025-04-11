@@ -1,31 +1,26 @@
-<?php 
+<?php
 
 namespace App\Http;
 
-use App\Http\Response;
-
 class ErrorResponse
 {
+    private $request;
     private $response;
 
-    public function __construct(Response $response)
+    public function __construct(Request $request, Response $response)
     {
-        $this->response = $response;        
+        $this->request = $request;
+        $this->response = $response;
     }
 
-    public function methodNotAllowed()
+    public function methodNotAllowed(): void
     {
-        $this->response->json([
-            'error' => 'Method Not Allowed'
-        ], 405);
-        exit;
+        $this->response->status(405);
+
     }
 
-    public function notFound()
+    public function notFound(): void
     {
-        $this->response->json([
-            'error' => 'Not Found'
-        ], 404);
-        exit;
+        $this->response->status(404);
     }
 }
