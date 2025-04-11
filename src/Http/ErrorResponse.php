@@ -6,17 +6,26 @@ use App\Http\Response;
 
 class ErrorResponse
 {
+    private $response;
+
+    public function __construct(Response $response)
+    {
+        $this->response = $response;        
+    }
+
     public function methodNotAllowed()
     {
-        Response::json([
+        $this->response->json([
             'error' => 'Method Not Allowed'
         ], 405);
+        exit;
     }
 
     public function notFound()
     {
-        Response::json([
+        $this->response->json([
             'error' => 'Not Found'
         ], 404);
+        exit;
     }
 }

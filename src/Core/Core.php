@@ -3,11 +3,12 @@
 namespace App\Core;
 
 use App\Http\Request;
+use App\Http\Response;
 use App\Http\ErrorResponse;
 
 class Core
 {
-    public static function displatch(array $routes)
+    public static function dispatch(array $routes, Response $response)
     {
         $url = '/';
 
@@ -26,8 +27,8 @@ class Core
                 $routerFound = true;
 
                 if($route['method'] !== Request::method()) {
-                    $errorHttp = new ErrorResponse();
-                    $errorHttp->methodNotAllowed();
+                    $errorHttp = new ErrorResponse($response);
+                    $errorHttp->methodNotAllowed($response);
                     return;
                 }
 
@@ -41,7 +42,7 @@ class Core
         }
 
         if (!$routerFound) {
-            $errorHttp = new ErrorResponse();
+            $errorHttp = new ErrorResponse($response);
             $errorHttp->notFound();
         }
     }
