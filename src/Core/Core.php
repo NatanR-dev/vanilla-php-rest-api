@@ -5,6 +5,7 @@ namespace App\Core;
 use App\Http\Request;
 use App\Http\Response;
 use App\Http\ErrorResponse;
+use App\Http\NormalizeUrl;
 
 class Core
 {
@@ -13,6 +14,8 @@ class Core
         $url = '/';
 
         isset($_GET['url']) && $url .= $_GET['url'];
+
+        $url = NormalizeUrl::normalize($url);
 
         $prefixController = 'App\\Controllers\\';
 
