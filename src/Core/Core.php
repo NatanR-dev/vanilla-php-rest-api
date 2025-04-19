@@ -37,7 +37,7 @@ class Core
 
                 $controller = $prefixController . $controller;
                 $extendController = new $controller();
-                $extendController->$action(...$matches);
+                $extendController->$action($request, $response, ...$matches);
                 return;
             }
         }

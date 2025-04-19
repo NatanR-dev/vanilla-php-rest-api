@@ -4,15 +4,27 @@ namespace App\Http;
 
 class Request
 {
-    private $method;
+    private static $method;
 
     public function __construct()
     {
-        $this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        self::$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     }
 
-    public function method(): string
+    public static function method(): string
     {
-        return $this->method;
+        return self::$method;
+    }
+
+    public static function body()
+    {
+        $json = json_decode(file_get_contents('php://input'), true) ?? [];
+
+        $data = match(self::method()) {
+            'GET' => $_GET, 
+            'POST', 'PUT', 'DELETE' => $json,
+        };
+
+        return $data;
     }
 }
