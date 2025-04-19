@@ -6,15 +6,13 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Http\ErrorResponse;
 use App\Http\NormalizeUrl;
+use App\Http\UrlHandler;
 
 class Core
 {
     public static function dispatch(array $routes, Request $request, Response $response)
     {
-        $url = '/';
-
-        isset($_GET['url']) && $url .= $_GET['url'];
-
+        $url = UrlHandler::getUrl();
         $url = NormalizeUrl::normalize($url);
 
         $prefixController = 'App\\Controllers\\';
