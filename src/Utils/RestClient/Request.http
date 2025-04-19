@@ -1,6 +1,9 @@
 ### Get root /
 GET http://localhost:8080
 
+### Post root /
+POST http://localhost:8080
+
 ### Get About
 GET http://localhost:8080/about
 
@@ -9,3 +12,18 @@ POST http://localhost:8080/about
 
 ### Get not exiting route
 GET http://localhost:8080/test
+
+
+### Users Create
+Get http://localhost:8080/users/create    
+
+### Users Create
+POST http://localhost:8080/users/create
+Content-Type: application/json
+
+{
+    "name": "Lucas",
+    "email": "lucas@mail.com",
+    "password": "admin",
+    "role": ["admin", "mod", "user"]
+} 
