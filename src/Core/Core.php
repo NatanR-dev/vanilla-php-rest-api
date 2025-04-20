@@ -4,7 +4,7 @@ namespace App\Core;
 
 use App\Http\Request;
 use App\Http\Response;
-use App\Http\ErrorResponse;
+use App\Http\HttpResponse;
 use App\Http\NormalizeUrl;
 use App\Http\UrlHandler;
 
@@ -28,23 +28,23 @@ class Core
                 $routerFound = true;
 
                 if($route['method'] !== $request->method()) {
-                    $errorHttp = new ErrorResponse($request, $response);
-                    $errorHttp->methodNotAllowed();
+                    $httpResponse = new HttpResponse($request, $response);
+                    $httpResponse->methodNotAllowed();
                     return;
                 }
 
                 [$controller, $action] = explode('@', $route['action']);
 
                 $controller = $prefixController . $controller;
-                $extendController = new $controller();
+                $extendController = new $controller($request, $response);
                 $extendController->$action($request, $response, ...$matches);
                 return;
             }
         }
 
         if (!$routerFound) {
-            $errorHttp = new ErrorResponse($request, $response);
-            $errorHttp->notFound();
+            $httpResponse = new HttpResponse($request, $response);
+            $httpResponse->notFound();
         }
     }
 }

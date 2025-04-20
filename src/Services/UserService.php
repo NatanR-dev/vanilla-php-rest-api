@@ -8,7 +8,7 @@ class UserService
 {
     public static function create(array $data)
     {
-        try{
+        try {
             $fields = Validator::validate([
                 'name'     => $data['name']     ?? '',
                 'email'    => $data['email']    ?? '',
@@ -17,9 +17,11 @@ class UserService
 
             return $fields;
 
-        }
-        catch (\Exception $e) {
-            return ['error' => $e ->getMessage()];
+        } catch (\Exception $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
         }
     }
 }
