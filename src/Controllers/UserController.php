@@ -20,10 +20,14 @@ class UserController
     {
         $body = Request::body();
 
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $this->httpResponse->badRequest("Invalid JSON format.");
+        }
+
         $userService = UserService::create($body);
 
-        if (isset($userService['error']) && $userService['error'] === true) {
-            return $this->httpResponse->badRequest($userService['message']);
+        if ($userService['error'] !== false) {
+            return $this->httpResponse->badRequest($userService['error']);
         }
 
         $this->httpResponse->created($userService);
