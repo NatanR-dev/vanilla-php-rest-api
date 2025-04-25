@@ -7,6 +7,7 @@ use Exception;
 use PDOException;
 use App\Models\User;
 use App\Utils\ServiceResponse;
+use App\Utils\MysqlErrorResolver;
 
 class UserService
 {
@@ -32,32 +33,20 @@ class UserService
         }
         catch (PDOException $e) {
 
-            if ($e->errorInfo[1] == 1044) {
-                    return ServiceResponse::error('User does not have permission to access the database.');
-                }
-                
-            if ($e->errorInfo[1] == 1049) {
-                return ServiceResponse::error('Database does not exist.');
-                }
-                
-            if ($e->errorInfo[1] == 1062) {
-                return ServiceResponse::error('Sorry, user already exists.');
-                }
+            $code = $e->errorInfo[1];
 
-            if ($e->errorInfo[1] == 1045) {
-                return ServiceResponse::error('User or password is incorrect.');
-                }
-                
-            return [
-                'error' => 'Database error: ' . $e->errorInfo[1],
-                //'error' => 'Database error: ' .  $e->errorInfo[2],
-                //'message' => 'Database error: ' . $e->getMessage();
-            ];
+            return match (true) {
+                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                default => ServiceResponse::error("Unknown database error: $code"),
+            };
+            
         }
         catch (Exception $e) {
-            return [
-                'error' => $e->getMessage()
-            ];
+            return 
+                ServiceResponse::error($e->getMessage());
         }
     }
 }
