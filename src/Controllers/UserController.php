@@ -43,7 +43,8 @@ class UserController
             return $this->httpResponse->badRequest($userService['message']);
         }
 
-        $this->httpResponse->ok($userService);
+        $this->httpResponse->ok(['access_token' => $userService]); 
+
     }
 
     public function fetch(Request $request, Response $response)

@@ -37,8 +37,7 @@ class User extends Database
 
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        //if(!password_verify($data['password'], $user['password'])) return false;
-        if ($data['password'] !== $user['password']) return false; 
+        if(!password_verify($data['password'], $user['password'])) return false;
 
         return [
             'id'    => $user['id'],

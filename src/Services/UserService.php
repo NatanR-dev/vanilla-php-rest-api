@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\JWT;
 use App\Utils\Validator;
 use Exception;
 use PDOException;
@@ -21,6 +22,8 @@ class UserService
                 'email'    => $data['email']    ?? '',
                 'password' => $data['password'] ?? '',
             ]);
+
+            $fields['password'] = password_hash($fields['password'], PASSWORD_DEFAULT);
 
             $user = User::save($fields);
 
@@ -62,7 +65,7 @@ class UserService
 
             if (!$user) return ServiceResponse::error('Sorry, we could not authenticate you.');
 
-            return $user;
+            return JWT::generate($user);
         }
         catch (PDOException $e) {
 
