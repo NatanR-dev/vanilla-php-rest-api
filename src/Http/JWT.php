@@ -22,6 +22,21 @@ class JWT
         
     }
 
+    public static function verify(string $jwt)
+    {
+        $tokenPartials = explode('.', $jwt);
+
+        if (count($tokenPartials) !== 3) return false;
+
+        [$header, $payload, $signature] = $tokenPartials;
+
+        if ($signature !== self::signature($header, $payload)) return false;
+
+        return self::base64url_decode($payload);
+
+        
+    }
+
     public static function signature(string $header, string $payload)
     {
         $signature = hash_hmac('sha256', $header . '.' . $payload, self::$secret, true);
@@ -38,10 +53,10 @@ class JWT
     {
         $padding = strlen($data) % 4;
 
-        $padding !== 0 && $data .= str_repeat('=', $padding - 4);
+        $padding !== 0 && $data .= str_repeat('=', 4 - $padding);
 
         $data = strtr($data, '-_', '+/');
 
-        return base64_decode($data);
+        return json_decode(base64_decode($data), true);
     }
 }

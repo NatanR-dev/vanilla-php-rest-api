@@ -91,8 +91,20 @@ class UserService
             if (isset($authorization['error']) && $authorization['error']) {
                 return ServiceResponse::error($authorization['message']);
             }
-            
-            return $authorization;
+
+            $userFromJWT = JWT::verify($authorization);
+
+            if (!$userFromJWT) {
+                return ServiceResponse::error('Please, login to access this resource.');
+            }
+
+            $user = User::find($userFromJWT['id']);
+
+            if (!$user) {
+                return ServiceResponse::error('Sorry, we could not find your account.');
+            }
+
+            return $user;
             
         }
         catch (PDOException $e) {
