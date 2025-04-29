@@ -50,7 +50,7 @@ class User extends Database
     {
         $pdo = self::getConnection();
 
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt = $pdo->prepare('SELECT id, name, email FROM users WHERE id = ?');
 
         $stmt->execute([$id]);
 
