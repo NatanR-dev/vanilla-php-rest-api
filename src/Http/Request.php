@@ -44,6 +44,6 @@ class Request
             return ServiceResponse::error('Please, provide a valid authorization header.');
         }
 
-        return $authorizationPartials; 
+        return $authorizationPartials[1] ?? ''; 
     }
 }
