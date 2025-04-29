@@ -84,4 +84,32 @@ class UserService
                 ServiceResponse::error($e->getMessage());
         }
     }
+
+    public static function fetch(mixed $authorization)
+    {
+        try {
+            if (isset($authorization['error']) && $authorization['error']) {
+                return ServiceResponse::error($authorization['message']);
+            }
+            
+            return $authorization;
+            
+        }
+        catch (PDOException $e) {
+
+            $code = $e->errorInfo[1];
+
+            return match (true) {
+                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                default => ServiceResponse::error("Unknown database error: $code"),
+            };
+        }
+        catch (Exception $e) {
+            return 
+                ServiceResponse::error($e->getMessage());
+        }
+    }
 }

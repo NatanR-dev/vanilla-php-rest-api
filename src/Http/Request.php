@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Utils\ServiceResponse;
+
 class Request
 {
     private static $method;
@@ -26,5 +28,22 @@ class Request
         };
 
         return $data;
+    }
+
+    public static function authorization()
+    {
+        $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+
+        if (!isset($headers['authorization'])) {
+            return ServiceResponse::error('Sorry, no authorization header provided.');
+        }
+
+        $authorizationPartials = explode(' ', $headers['authorization']);
+
+        if (count($authorizationPartials) !== 2) {
+            return ServiceResponse::error('Please, provide a valid authorization header.');
+        }
+
+        return $authorizationPartials; 
     }
 }

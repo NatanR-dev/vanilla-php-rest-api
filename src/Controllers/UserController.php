@@ -47,9 +47,17 @@ class UserController
 
     }
 
-    public function fetch(Request $request, Response $response)
+    public function fetch()
     {
-        
+        $authorization = Request::authorization();
+
+        $userService = UserService::fetch($authorization);
+
+        if (isset($userService['error']) && $userService['error']) {
+            return $this->httpResponse->badRequest($userService['message']);
+        }
+
+        $this->httpResponse->ok(['access_token' => $userService]);
     }
 
     public function update(Request $request, Response $response)
