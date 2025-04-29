@@ -60,9 +60,19 @@ class UserController
         $this->httpResponse->ok(['access_token' => $userService]);
     }
 
-    public function update(Request $request, Response $response)
+    public function update()
     {
-        
+        $authorization = Request::authorization();
+
+        $body = Request::body();
+
+        $userService = UserService::update($authorization, $body);
+
+        if (isset($userService['error']) && $userService['error']) {
+            return $this->httpResponse->badRequest($userService['message']);
+        }
+
+        $this->httpResponse->ok(['access_token' => $userService]);
     }
 
     public function remove(Request $request, Response $response, array $id)
