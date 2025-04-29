@@ -37,13 +37,23 @@ class User extends Database
 
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        //if(!password_verify($data['password'], $user['password'])) return false;
-        if ($data['password'] !== $user['password']) return false; 
+        if(!password_verify($data['password'], $user['password'])) return false;
 
         return [
             'id'    => $user['id'],
             'name'  => $user['name'],
             'email' => $user['email'],
         ];
+    }
+
+    public static function find(int|string $id)
+    {
+        $pdo = self::getConnection();
+
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+
+        $stmt->execute([$id]);
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 }

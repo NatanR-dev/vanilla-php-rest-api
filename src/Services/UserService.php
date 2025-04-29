@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\JWT;
 use App\Utils\Validator;
 use Exception;
 use PDOException;
@@ -21,6 +22,8 @@ class UserService
                 'email'    => $data['email']    ?? '',
                 'password' => $data['password'] ?? '',
             ]);
+
+            $fields['password'] = password_hash($fields['password'], PASSWORD_DEFAULT);
 
             $user = User::save($fields);
 
@@ -62,7 +65,35 @@ class UserService
 
             if (!$user) return ServiceResponse::error('Sorry, we could not authenticate you.');
 
-            return $user;
+            return JWT::generate($user);
+        }
+        catch (PDOException $e) {
+
+            $code = $e->errorInfo[1];
+
+            return match (true) {
+                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                default => ServiceResponse::error("Unknown database error: $code"),
+            };
+        }
+        catch (Exception $e) {
+            return 
+                ServiceResponse::error($e->getMessage());
+        }
+    }
+
+    public static function fetch(mixed $authorization)
+    {
+        try {
+            if (isset($authorization['error']) && $authorization['error']) {
+                return ServiceResponse::error($authorization['message']);
+            }
+            
+            return $authorization;
+            
         }
         catch (PDOException $e) {
 

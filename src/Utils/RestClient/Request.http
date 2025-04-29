@@ -1,20 +1,20 @@
 ### Get root /
 GET http://localhost:8080
 
-### Post root /
+### Post root / (Method Not Allowed)
 POST http://localhost:8080
 
-### Get About
+### Get About (Doens't exist)
 GET http://localhost:8080/about
 
-### Post Teste
+### Post Teste (Method Not Allowed)
 POST http://localhost:8080/about
 
-### Get not exiting route
+### Get (not exiting route)
 GET http://localhost:8080/test
 
 
-### Users Create
+### Users Create (Create a new user|Method Not  Allowed)
 Get http://localhost:8080/users/create    
 
 ### Users Create
@@ -22,8 +22,22 @@ POST http://localhost:8080/users/create
 Content-Type: application/json
 
 {
-    "name": "Lucas",
-    "email": "lucas@mail.com",
-    //"password": "admin",
-    "role": ["admin", "mod", "user"]
+    "name": "Marcelo10",
+    "email": "marcelo10@mail.com",
+    "password": "admin"
+    //"role": ["admin", "mod", "user"]
 } 
+
+### Post Auth User
+POST http://localhost:8080/users/login
+Content-Type: application/json
+
+{
+    "email": "marcelo10@mail.com",
+    "password": "admin"
+}
+
+### Get Users (Bearer Token)
+GET http://localhost:8080/users/fetch
+Content-Type: application/json
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NDUsIm5hbWUiOiJNYXJjZWxvMTAiLCJlbWFpbCI6Im1hcmNlbG8xMEBtYWlsLmNvbSJ9.4UZSS8azalfw1Ao9Ut7aJy_KRtz-tvUR9UwCSSWrsXw
