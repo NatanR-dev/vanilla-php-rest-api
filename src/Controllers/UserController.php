@@ -35,7 +35,15 @@ class UserController
 
     public function login(Request $request, Response $response)
     {
-        
+        $body = Request::body();
+
+        $userService = UserService::auth($body);
+
+        if (isset($userService['error']) && $userService['error']) {
+            return $this->httpResponse->badRequest($userService['message']);
+        }
+
+        $this->httpResponse->ok($userService);
     }
 
     public function fetch(Request $request, Response $response)
