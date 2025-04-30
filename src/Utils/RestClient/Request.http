@@ -41,3 +41,12 @@ Content-Type: application/json
 GET http://localhost:8080/users/fetch
 Content-Type: application/json
 authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NDUsIm5hbWUiOiJNYXJjZWxvMTAiLCJlbWFpbCI6Im1hcmNlbG8xMEBtYWlsLmNvbSJ9.4UZSS8azalfw1Ao9Ut7aJy_KRtz-tvUR9UwCSSWrsXw
+
+### Update Users (Bearer Token)
+PUT http://localhost:8080/users/update
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NDUsIm5hbWUiOiJNYXJjZWxvMTAiLCJlbWFpbCI6Im1hcmNlbG8xMEBtYWlsLmNvbSJ9.4UZSS8azalfw1Ao9Ut7aJy_KRtz-tvUR9UwCSSWrsXw
+Content-Type: application/json
+
+{
+    "name": "Marcelo102"
+}

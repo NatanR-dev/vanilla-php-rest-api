@@ -91,8 +91,108 @@ class UserService
             if (isset($authorization['error']) && $authorization['error']) {
                 return ServiceResponse::error($authorization['message']);
             }
+
+            $userFromJWT = JWT::verify($authorization);
+
+            if (!$userFromJWT) {
+                return ServiceResponse::error('Please, login to access this resource.');
+            }
+
+            $user = User::find($userFromJWT['id']);
+
+            if (!$user) {
+                return ServiceResponse::error('Sorry, we could not find your account.');
+            }
+
+            return $user;
             
-            return $authorization;
+        }
+        catch (PDOException $e) {
+
+            $code = $e->errorInfo[1];
+
+            return match (true) {
+                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                default => ServiceResponse::error("Unknown database error: $code"),
+            };
+        }
+        catch (Exception $e) {
+            return 
+                ServiceResponse::error($e->getMessage());
+        }
+    }
+
+    public static function update(mixed $authorization, array $data)
+    {
+        try {
+            if (isset($authorization['error']) && $authorization['error']) {
+                return ServiceResponse::error($authorization['message']);
+            }
+
+            $userFromJWT = JWT::verify($authorization);
+
+            if (!$userFromJWT) {
+                return ServiceResponse::error('Please, login to access this resource.');
+            }
+
+            $fields = Validator::validate([
+                'name' => $data['name'] ?? '',
+            ]);
+
+            $user = User::update($userFromJWT['id'], $fields);
+
+            if (!$user) {
+                return ServiceResponse::error('Sorry, we could not update your account.');
+            }
+
+            return ServiceResponse::success('User updated successfully!', [
+                'user' => $user
+            ]);
+            
+        }
+        catch (PDOException $e) {
+
+            $code = $e->errorInfo[1];
+
+            return match (true) {
+                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                default => ServiceResponse::error("Unknown database error: $code"),
+            };
+        }
+        catch (Exception $e) {
+            return 
+                ServiceResponse::error($e->getMessage());
+        }
+    }
+
+    public static function delete(mixed $authorization, int|string $id)
+    {
+        try {
+            if (isset($authorization['error']) && $authorization['error']) {
+                return ServiceResponse::error($authorization['message']);
+            }
+
+            $userFromJWT = JWT::verify($authorization);
+
+            if (!$userFromJWT) {
+                return ServiceResponse::error('Please, login to access this resource.');
+            }
+
+            $user = User::delete($id);
+
+            if (!$user) {
+                return ServiceResponse::error('Sorry, we could not delete your account.');
+            }
+
+            return ServiceResponse::success('User deleted successfully!', [
+                'user' => $user
+            ]);
             
         }
         catch (PDOException $e) {
