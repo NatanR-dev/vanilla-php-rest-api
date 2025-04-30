@@ -67,4 +67,21 @@ class User extends Database
 
         return $stmt->rowCount() > 0 ? true : false;
     }
+
+    public static function delete(int|string $id)
+    {
+        $pdo = self::getConnection();
+
+        $stmt = $pdo->prepare('
+            DELETE 
+            FROM 
+                users
+            WHERE 
+                id = ?
+        ');
+
+        $stmt->execute([$id]);
+
+        return $stmt->rowCount() > 0 ? true : false;
+    }
 }

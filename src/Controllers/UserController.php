@@ -75,8 +75,16 @@ class UserController
         $this->httpResponse->ok(['access_token' => $userService]);
     }
 
-    public function remove(Request $request, Response $response, array $id)
+    public function remove(Request $request, Response $response, string|int $id)
     {
-        
+        $authorization = Request::authorization();
+
+        $userService = UserService::delete($authorization, $id);
+
+        if (isset($userService['error']) && $userService['error']) {
+            return $this->httpResponse->badRequest($userService['message']);
+        }
+
+        $this->httpResponse->ok(['access_token' => $userService]);
     }
 }
