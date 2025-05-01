@@ -21,7 +21,11 @@ class User extends Database
             $data['password']
             ]);
 
-            return $pdo->lastInsertId() > 0 ? true : false;
+            $lastInsertId = $pdo->lastInsertId();
+            if ($lastInsertId >0) {
+                return self::find($lastInsertId);
+            }
+            return false;
     }
 
     public static function authentication(array $data)
@@ -40,9 +44,11 @@ class User extends Database
         if(!password_verify($data['password'], $user['password'])) return false;
 
         return [
-            'id'    => $user['id'],
-            'name'  => $user['name'],
-            'email' => $user['email'],
+            'id'         => $user['id'],
+            'name'       => $user['name'],
+            'email'      => $user['email'],
+            'created_at' => $user['created_at'],
+            'updated_at' => $user['updated_at'],
         ];
     }
 
@@ -50,7 +56,7 @@ class User extends Database
     {
         $pdo = self::getConnection();
 
-        $stmt = $pdo->prepare('SELECT id, name, email FROM users WHERE id = ?');
+        $stmt = $pdo->prepare('SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?');
 
         $stmt->execute([$id]);
 
@@ -65,7 +71,10 @@ class User extends Database
 
         $stmt->execute([$data['name'], $id]);
 
-        return $stmt->rowCount() > 0 ? true : false;
+        if ($stmt->rowCount() > 0) {
+            return self::find($id);
+        }
+        return false;
     }
 
     public static function delete(int|string $id)
