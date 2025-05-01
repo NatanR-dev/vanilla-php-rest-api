@@ -8,7 +8,7 @@ use Exception;
 use PDOException;
 use App\Models\User;
 use App\Utils\ServiceResponse;
-use App\Utils\MysqlErrorResolver;
+use App\Utils\MySqlErrorResolver;
 
 class UserService
 {
@@ -39,10 +39,14 @@ class UserService
             $code = $e->errorInfo[1];
 
             return match (true) {
-                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
-                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
-                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
-                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                MySqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MySqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MySqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MySqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                MySqlErrorResolver::isFieldNotFound($code)      => ServiceResponse::error('Field not found in the database.'),
+                MySqlErrorResolver::isTableNotFound($code)      => ServiceResponse::error('No tables found in the database.'),
+                MySqlErrorResolver::isInvalidData($code)        => ServiceResponse::error('Invalid data provided.'),
+                MySqlErrorResolver::isKnown($code)              => ServiceResponse::error('Sorry, we could not create your account.'),
                 default => ServiceResponse::error("Unknown database error: $code"),
             };
             
@@ -72,10 +76,10 @@ class UserService
             $code = $e->errorInfo[1];
 
             return match (true) {
-                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
-                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
-                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
-                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                MySqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MySqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MySqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MySqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
                 default => ServiceResponse::error("Unknown database error: $code"),
             };
         }
@@ -112,10 +116,10 @@ class UserService
             $code = $e->errorInfo[1];
 
             return match (true) {
-                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
-                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
-                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
-                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                MySqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MySqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MySqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MySqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
                 default => ServiceResponse::error("Unknown database error: $code"),
             };
         }
@@ -158,10 +162,10 @@ class UserService
             $code = $e->errorInfo[1];
 
             return match (true) {
-                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
-                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
-                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
-                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                MySqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MySqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MySqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MySqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
                 default => ServiceResponse::error("Unknown database error: $code"),
             };
         }
@@ -200,10 +204,10 @@ class UserService
             $code = $e->errorInfo[1];
 
             return match (true) {
-                MysqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
-                MysqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
-                MysqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
-                MysqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
+                MySqlErrorResolver::isNoPermission($code)       => ServiceResponse::error('Access denied for user.'),
+                MySqlErrorResolver::isDatabaseNotFound($code)   => ServiceResponse::error('Database does not exist.'),
+                MySqlErrorResolver::isDuplicateEntry($code)     => ServiceResponse::error('Sorry, user already exists.'),
+                MySqlErrorResolver::isInvalidCredentials($code) => ServiceResponse::error('Invalid user or password.'),
                 default => ServiceResponse::error("Unknown database error: $code"),
             };
         }
