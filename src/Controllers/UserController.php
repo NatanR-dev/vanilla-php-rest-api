@@ -26,8 +26,8 @@ class UserController
 
         $userService = UserService::create($body);
 
-        if ($userService['error']) {
-        return $this->httpResponse->badRequest($userService['message']);
+        if (isset($userService['error']) && $userService['error']) {
+            return $this->httpResponse->badRequest($userService['message']);
         }
 
         $this->httpResponse->created($userService);
