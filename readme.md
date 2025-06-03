@@ -14,15 +14,15 @@
 ## English
 
 ### 📝 Description
-A modern, secure, and well-structured REST API built with vanilla PHP. This project demonstrates clean architecture principles, proper error handling, and best practices in PHP development.
+A modern, secure, and well-structured REST API built with vanilla PHP. This project implements a custom routing system inspired by modern frameworks, following a layered architecture pattern with clear separation of concerns between controllers, services, and models. It demonstrates practical approaches to error handling, authentication, and database operations in PHP.
 
 ### ✨ Features
 - 🔐 JWT Authentication
 - 🛡️ Secure Password Hashing
-- 📦 Clean Architecture
+- 📦 Layered Architecture
 - 🎯 MVC Pattern
 - 🔄 RESTful Endpoints
-- 🚦 Route Management
+- 🚦 Custom Routing System
 - 📊 MySQL Database Integration
 - ⚡ PDO for Database Operations
 - 🎨 Modern Response Format
@@ -146,15 +146,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Português
 
 ### 📝 Descrição
-Uma API REST moderna, segura e bem estruturada construída com PHP puro. Este projeto demonstra princípios de arquitetura limpa, tratamento adequado de erros e melhores práticas no desenvolvimento PHP.
+Uma API REST moderna, segura e bem estruturada construída com PHP puro. Este projeto implementa um sistema de rotas personalizado inspirado em frameworks modernos, seguindo um padrão de arquitetura em camadas com clara separação de responsabilidades entre controllers, services e models. Demonstra abordagens práticas para tratamento de erros, autenticação e operações com banco de dados em PHP.
 
 ### ✨ Funcionalidades
 - 🔐 Autenticação JWT
 - 🛡️ Hash Seguro de Senhas
-- 📦 Arquitetura Limpa
+- 📦 Arquitetura em Camadas
 - 🎯 Padrão MVC
 - 🔄 Endpoints RESTful
-- 🚦 Gerenciamento de Rotas
+- 🚦 Sistema de Rotas Personalizado
 - 📊 Integração com MySQL
 - ⚡ PDO para Operações no Banco
 - 🎨 Formato Moderno de Resposta
@@ -179,12 +179,12 @@ O projeto utiliza Docker com os seguintes serviços:
 ### 🏗️ Arquitetura do Projeto
 
 #### Sistema Core
-O projeto implementa um sistema de rotas personalizado inspirado em frameworks PHP modernos como Laravel. A funcionalidade principal é gerenciada pela classe `Core`, que controla:
-- Despacho de rotas
-- Instanciação de controllers
-- Execução de métodos
-- Normalização de URLs
-- Manipulação de Request/Response
+The project implements a custom routing system inspired by modern PHP frameworks like Laravel. The core functionality is handled by the `Core` class, which manages:
+- Route dispatching
+- Controller instantiation
+- Method execution
+- URL normalization
+- Request/Response handling
 
 #### Sistema de Rotas
 As rotas são definidas usando métodos estáticos, similar à sintaxe do Laravel:
