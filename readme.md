@@ -85,6 +85,15 @@ src/
 - **Http**: Handle request/response and routing
 - **Utils**: Provide helper functions and utilities
 
+### 📚 API Endpoints
+
+#### Users
+- `POST /users/create` - Create a new user
+- `POST /users/login` - User authentication
+- `GET /users/fetch` - Get user data (requires JWT)
+- `PUT /users/update` - Update user data (requires JWT)
+- `DELETE /users/{id}/delete` - Delete user (requires JWT)
+
 ### 🚀 Getting Started
 
 #### Prerequisites
@@ -96,7 +105,7 @@ src/
 #### Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/vanilla-php-rest-api.git
+git clone https://github.com/NatanR-dev/vanilla-php-rest-api.git
 ```
 
 2. Configure your database
@@ -117,14 +126,142 @@ CREATE TABLE users (
 );
 ```
 
-### 📚 API Endpoints
+### 📝 Simple Doc for Contributors
 
-#### Users
-- `POST /users/create` - Create a new user
-- `POST /users/login` - User authentication
-- `GET /users/fetch` - Get user data (requires JWT)
-- `PUT /users/update` - Update user data (requires JWT)
-- `DELETE /users/{id}/delete` - Delete user (requires JWT)
+This section provides a detailed technical overview of the project's architecture and implementation details for developers who want to understand or contribute to the codebase.
+
+#### Core System Architecture
+
+1. **Routing System**
+   ```php
+   // Route definition
+   Route::post('/users/create', 'UserController@store');
+   
+   // Route matching in Core class
+   $pattern = '#^'. preg_replace('/{id}/', '([\w-]+)', $route['path']) .'$#';
+   if (preg_match($pattern, $url, $matches)) {
+       // Route matched!
+   }
+   ```
+
+2. **Request Processing Pipeline**
+   ```php
+   // Request body parsing
+   $json = json_decode(file_get_contents('php://input'), true) ?? [];
+   
+   // Authorization header handling
+   $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+   $authorizationPartials = explode(' ', $headers['authorization']);
+   ```
+
+3. **Response System**
+   ```php
+   // HTTP Response formatting
+   $this->response->json([
+       'error' => false,
+       'success' => true,
+       'data' => $data
+   ], 200);
+   ```
+
+#### Database Layer
+
+1. **Connection Management**
+   ```php
+   // PDO Connection
+   $pdo = new PDO("mysql:host=db;dbname=app_db", "user", "user_password");
+   ```
+
+2. **Error Handling**
+   ```php
+   // MySQL Error Mapping
+   match (true) {
+       MySqlErrorResolver::isNoPermission($code) => 
+           ServiceResponse::error('Access denied for user.'),
+       MySqlErrorResolver::isDatabaseNotFound($code) => 
+           ServiceResponse::error('Database does not exist.'),
+       // ... other error cases
+   }
+   ```
+
+#### Authentication System
+
+1. **JWT Implementation**
+   ```php
+   // Token Generation
+   $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+   $payload = json_encode($data);
+   $signature = hash_hmac('sha256', $header . '.' . $payload, $secret, true);
+   
+   // Token Verification
+   $tokenPartials = explode('.', $jwt);
+   if ($signature !== self::signature($header, $payload)) return false;
+   ```
+
+2. **Password Security**
+   ```php
+   // Password Hashing
+   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+   
+   // Password Verification
+   if(!password_verify($password, $user['password'])) return false;
+   ```
+
+#### Service Layer Patterns
+
+1. **Standard Response Format**
+   ```php
+   // Success Response
+   return [
+       'error' => false,
+       'success' => true,
+       'message' => $message,
+       'data' => $data
+   ];
+   
+   // Error Response
+   return [
+       'error' => true,
+       'success' => false,
+       'message' => $message
+   ];
+   ```
+
+2. **Data Validation**
+   ```php
+   // Field Validation
+   foreach($fields as $field => $value) {
+       if (empty(trim($value))) {
+           throw new \Exception("The field $field is required.");
+       }
+   }
+   ```
+
+#### Docker Configuration
+
+1. **Service Definitions**
+   ```yaml
+   services:
+     web:
+       build:
+         context: .
+         dockerfile: Dockerfile
+       ports:
+         - "8080:80"
+     
+     db:
+       image: mysql:5.7
+       environment:
+         MYSQL_DATABASE: ${MYSQL_DATABASE}
+         MYSQL_USER: ${MYSQL_USER}
+   ```
+
+2. **PHP Configuration**
+   ```dockerfile
+   FROM php:8.2-apache
+   RUN docker-php-ext-install pdo pdo_mysql
+   RUN a2enmod rewrite
+   ```
 
 #### Testing the API
 You can test all endpoints using the included REST Client file. The project comes with a pre-configured `Request.http` file in the `src/Utils/RestClient` directory. This file contains all the necessary requests to test the API endpoints.
@@ -179,12 +316,12 @@ O projeto utiliza Docker com os seguintes serviços:
 ### 🏗️ Arquitetura do Projeto
 
 #### Sistema Core
-The project implements a custom routing system inspired by modern PHP frameworks like Laravel. The core functionality is handled by the `Core` class, which manages:
-- Route dispatching
-- Controller instantiation
-- Method execution
-- URL normalization
-- Request/Response handling
+O projeto implementa um sistema de rotas personalizado inspirado em frameworks PHP modernos como Laravel. A funcionalidade principal é gerenciada pela classe `Core`, que controla:
+- Despacho de rotas
+- Instanciação de controllers
+- Execução de métodos
+- Normalização de URLs
+- Manipulação de Request/Response
 
 #### Sistema de Rotas
 As rotas são definidas usando métodos estáticos, similar à sintaxe do Laravel:
@@ -217,7 +354,16 @@ src/
 - **Http**: Manipulam request/response e roteamento
 - **Utils**: Fornecem funções e utilitários auxiliares
 
-### 🛠️ Começando
+### 📚 Endpoints da API
+
+#### Usuários
+- `POST /users/create` - Criar novo usuário
+- `POST /users/login` - Autenticação de usuário
+- `GET /users/fetch` - Obter dados do usuário (requer JWT)
+- `PUT /users/update` - Atualizar dados do usuário (requer JWT)
+- `DELETE /users/{id}/delete` - Deletar usuário (requer JWT)
+
+### 🚀 Começando
 
 #### Pré-requisitos
 - PHP 8.0 ou superior
@@ -228,7 +374,7 @@ src/
 #### Instalação
 1. Clone o repositório
 ```bash
-git clone https://github.com/seuusuario/vanilla-php-rest-api.git
+git clone https://github.com/NatanR-dev/vanilla-php-rest-api.git
 ```
 
 2. Configure seu banco de dados
@@ -249,14 +395,142 @@ CREATE TABLE users (
 );
 ```
 
-### 📚 Endpoints da API
+### 📝 Mini Doc para Contribuidores
 
-#### Usuários
-- `POST /users/create` - Criar novo usuário
-- `POST /users/login` - Autenticação de usuário
-- `GET /users/fetch` - Obter dados do usuário (requer JWT)
-- `PUT /users/update` - Atualizar dados do usuário (requer JWT)
-- `DELETE /users/{id}/delete` - Deletar usuário (requer JWT)
+Esta seção fornece uma visão técnica detalhada da arquitetura do projeto e detalhes de implementação para desenvolvedores que desejam entender ou contribuir com o código.
+
+#### Arquitetura do Sistema Core
+
+1. **Sistema de Rotas**
+   ```php
+   // Definição de rota
+   Route::post('/users/create', 'UserController@store');
+   
+   // Correspondência de rota na classe Core
+   $pattern = '#^'. preg_replace('/{id}/', '([\w-]+)', $route['path']) .'$#';
+   if (preg_match($pattern, $url, $matches)) {
+       // Rota encontrada!
+   }
+   ```
+
+2. **Pipeline de Processamento de Requisições**
+   ```php
+   // Parsing do corpo da requisição
+   $json = json_decode(file_get_contents('php://input'), true) ?? [];
+   
+   // Manipulação do header de autorização
+   $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+   $authorizationPartials = explode(' ', $headers['authorization']);
+   ```
+
+3. **Sistema de Resposta**
+   ```php
+   // Formatação da resposta HTTP
+   $this->response->json([
+       'error' => false,
+       'success' => true,
+       'data' => $data
+   ], 200);
+   ```
+
+#### Camada de Banco de Dados
+
+1. **Gerenciamento de Conexão**
+   ```php
+   // Conexão PDO
+   $pdo = new PDO("mysql:host=db;dbname=app_db", "user", "user_password");
+   ```
+
+2. **Tratamento de Erros**
+   ```php
+   // Mapeamento de Erros MySQL
+   match (true) {
+       MySqlErrorResolver::isNoPermission($code) => 
+           ServiceResponse::error('Acesso negado para o usuário.'),
+       MySqlErrorResolver::isDatabaseNotFound($code) => 
+           ServiceResponse::error('Banco de dados não existe.'),
+       // ... outros casos de erro
+   }
+   ```
+
+#### Sistema de Autenticação
+
+1. **Implementação JWT**
+   ```php
+   // Geração de Token
+   $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+   $payload = json_encode($data);
+   $signature = hash_hmac('sha256', $header . '.' . $payload, $secret, true);
+   
+   // Verificação de Token
+   $tokenPartials = explode('.', $jwt);
+   if ($signature !== self::signature($header, $payload)) return false;
+   ```
+
+2. **Segurança de Senha**
+   ```php
+   // Hash de Senha
+   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+   
+   // Verificação de Senha
+   if(!password_verify($password, $user['password'])) return false;
+   ```
+
+#### Padrões da Camada de Serviço
+
+1. **Formato Padrão de Resposta**
+   ```php
+   // Resposta de Sucesso
+   return [
+       'error' => false,
+       'success' => true,
+       'message' => $message,
+       'data' => $data
+   ];
+   
+   // Resposta de Erro
+   return [
+       'error' => true,
+       'success' => false,
+       'message' => $message
+   ];
+   ```
+
+2. **Validação de Dados**
+   ```php
+   // Validação de Campos
+   foreach($fields as $field => $value) {
+       if (empty(trim($value))) {
+           throw new \Exception("O campo $field é obrigatório.");
+       }
+   }
+   ```
+
+#### Configuração Docker
+
+1. **Definições de Serviço**
+   ```yaml
+   services:
+     web:
+       build:
+         context: .
+         dockerfile: Dockerfile
+       ports:
+         - "8080:80"
+     
+     db:
+       image: mysql:5.7
+       environment:
+         MYSQL_DATABASE: ${MYSQL_DATABASE}
+         MYSQL_USER: ${MYSQL_USER}
+   ```
+
+2. **Configuração PHP**
+   ```dockerfile
+   FROM php:8.2-apache
+   RUN docker-php-ext-install pdo pdo_mysql
+   RUN a2enmod rewrite
+   ```
 
 #### Testando a API
 Você pode testar todos os endpoints usando o arquivo REST Client incluído. O projeto vem com um arquivo `Request.http` pré-configurado no diretório `src/Utils/RestClient`. Este arquivo contém todas as requisições necessárias para testar os endpoints da API.
