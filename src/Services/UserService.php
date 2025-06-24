@@ -9,6 +9,7 @@ use PDOException;
 use App\Models\User;
 use App\Utils\ServiceResponse;
 use App\Utils\MySqlErrorResolver;
+use App\Utils\DateHelper;
 
 class UserService
 {
@@ -108,7 +109,7 @@ class UserService
                 return ServiceResponse::error('Sorry, we could not find your account.');
             }
 
-            return $user;
+            return DateHelper::formatDatesToIso($user);
             
         }
         catch (PDOException $e) {
@@ -153,7 +154,7 @@ class UserService
             }
 
             return ServiceResponse::success('User updated successfully!', [
-                'user' => $user
+                'user' => DateHelper::formatDatesToIso($user)
             ]);
             
         }

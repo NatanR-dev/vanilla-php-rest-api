@@ -82,7 +82,7 @@ class UserController
         $userService = UserService::delete($authorization, $id);
 
         if (isset($userService['error']) && $userService['error']) {
-            return $this->httpResponse->badRequest($userService['message']);
+            return $this->httpResponse->notFound($userService['message']);
         }
 
         $this->httpResponse->ok(['access_token' => $userService]);
