@@ -40,6 +40,15 @@ class HttpResponse
         ], 400);
     }
 
+    public function unauthorized(string $message): void
+    {
+        $this->response->json([
+            'error' => true,
+            'success' => false,
+            'message' => $message
+        ], 401);
+    }
+
     public function created(array $data = []): void
     {
         $this->response->json([
