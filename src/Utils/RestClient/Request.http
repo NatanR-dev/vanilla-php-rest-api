@@ -1,23 +1,23 @@
-### Get root /
+### Get root / 
 GET http://localhost:8080
 
-### Post root / (Method Not Allowed)
+### Post root / - Method not allowed on root
 POST http://localhost:8080
 
-### Get About (Doens't exist)
+### Get About - Nonexistent route (should return 404)
 GET http://localhost:8080/about
 
-### Post Teste (Method Not Allowed)
+### Post Test - Method not allowed on nonexistent route
 POST http://localhost:8080/about
 
-### Get (not exiting route)
+### Get (nonexistent route) - Should return 404
 GET http://localhost:8080/test
 
 
-### Users Create (Create a new user|Method Not  Allowed)
+### Users Create (GET) - Not allowed, creation must be via POST
 Get http://localhost:8080/users/create    
 
-### Users Create
+### Users Create (POST) - Creates a new user
 POST http://localhost:8080/users/create
 Content-Type: application/json
 
@@ -28,7 +28,7 @@ Content-Type: application/json
     //"role": ["admin", "mod", "user"]
 } 
 
-### Post Auth User
+### Post Auth User - User login, returns JWT
 POST http://localhost:8080/users/login
 Content-Type: application/json
 
@@ -37,20 +37,20 @@ Content-Type: application/json
     "password": "admin"
 }
 
-### Get Users (Bearer Token)
+### Get Users (Bearer Token) - Lists authenticated users
 GET http://localhost:8080/users/fetch
 Content-Type: application/json
-authorization: Bearer <token_here>
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwibmFtZSI6Ik1hcmNlbG8xMCIsImVtYWlsIjoibWFyY2VsbzEwQG1haWwuY29tIiwiY3JlYXRlZF9hdCI6IjIwMjUtMDUtMDEgMjA6MzI6NTIiLCJ1cGRhdGVkX2F0IjoiMjAyNS0wNS0wMSAyMDozMjo1MiJ9.yMTeXBglFnqdxBgRNVaEzOVmQYLLxXbm4MLTsrdKAQc
 
-### Update Users (Bearer Token)
+### Update Users (Bearer Token) - Updates authenticated user data
 PUT http://localhost:8080/users/update
-authorization: Bearer <token_here>
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwibmFtZSI6Ik1hcmNlbG8xMCIsImVtYWlsIjoibWFyY2VsbzEwQG1haWwuY29tIiwiY3JlYXRlZF9hdCI6IjIwMjUtMDUtMDEgMjA6MzI6NTIiLCJ1cGRhdGVkX2F0IjoiMjAyNS0wNS0wMSAyMDozMjo1MiJ9.yMTeXBglFnqdxBgRNVaEzOVmQYLLxXbm4MLTsrdKAQc
 Content-Type: application/json
 
 {
-    "name": "Marcelo102"
+    "name": "Marcelo107"
 }
 
-### Delete Users (Bearer Token)
-DELETE http://localhost:8080/users/2/delete
-authorization: Bearer <token_here>
+### Delete Users (Bearer Token) - Deletes user by ID
+DELETE http://localhost:8080/users/5/delete
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwibmFtZSI6Ik1hcmNlbG8xMCIsImVtYWlsIjoibWFyY2VsbzEwQG1haWwuY29tIiwiY3JlYXRlZF9hdCI6IjIwMjUtMDUtMDEgMTM6MzQ6MzIiLCJ1cGRhdGVkX2F0IjoiMjAyNS0wNS0wMSAxMzozNDozMiJ9.YytwOMAquxRLWtaIQAoVBEJY3e2B67BUq6KQQFVYpd8
